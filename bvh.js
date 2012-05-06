@@ -1,5 +1,5 @@
 var BVH = (function(exports) {
-    
+
   function Parser(lines) {
     this._lines = lines;
     this._lineNumber = 0;
@@ -7,37 +7,54 @@ var BVH = (function(exports) {
   };
   
   Parser.prototype.parse = function() {    
-    this.next().hierarchy();
+    this
+      .blank()
+      .hierarchy();
     return this;
   };
   
   Parser.prototype.hierarchy = function() {
     this
+      .expect('HIERARCHY')
       .root()
       .motion();
+    return this;
   };
 
   Parser.prototype.blank = function() {
+    while (this.accept('')) {
+      this.next();
+    }
+    return this;
   };
 
   Parser.prototype.root = function() {
     var that = this,
         node;
     this
+      .blank()
       .expect('ROOT', function(line) {
         var nodeName = line.split(' ')[1];
         node = new BVHNode(nodeName);
         that.currentNode = node;
       })
+      .blank()
       .expect('{')
+      .blank()
       .offset()
-      .channels();
+      .blank()
+      .channels()
+      .blank();
     while (this.accept('JOINT')) {
-      this.joint();
+      this
+        .joint()
+        .blank();
       this.currentNode = node;
     }
     if (this.accept('End')) this.end();
-    this.expect('}');
+    this
+      .blank()
+      .expect('}');
     return this;
   };
 
@@ -45,6 +62,7 @@ var BVH = (function(exports) {
     var that = this,
         node;
     this
+      .blank()
       .expect('JOINT', function(line) {
         var nodeName = line.split(' ')[1];
         node = new BVHNode(nodeName);
@@ -52,25 +70,39 @@ var BVH = (function(exports) {
         that.currentNode.children.push(node);
         that.currentNode = node;
       })
+      .blank()
       .expect('{')
+      .blank()
       .offset()
-      .channels();
+      .blank()
+      .channels()
+      .blank();
     while (this.accept('JOINT')) {
-      this.joint();
+      this
+        .joint()
+        .blank();
       this.currentNode = node;
     }
     if (this.accept('End')) this.end();
-    this.expect('}');
+    this
+      .blank()
+      .expect('}');
+    return this;
   };
 
   Parser.prototype.end = function() {
+    this.blank();
     if (this.get(0) !== 'End Site') {
-      throw new Error('Parse error: Invalid token ' + this.get(0) + '. End Site expected.');
+      throw new Error('Parse error: End Site expected, but ' + this.get() + '.');
     }
-    this.next();
-    this.expect('{');
-    this.endOffset();
-    this.expect('}');
+    this
+      .next()
+      .blank()
+      .expect('{')
+      .blank()
+      .endOffset()
+      .blank()
+      .expect('}');
     return this;
   };
 
@@ -264,4 +296,5 @@ var BVH = (function(exports) {
   };
 
   return exports;
+
 }({}));
