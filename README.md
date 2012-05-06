@@ -3,7 +3,6 @@
 ## Usage
 
     BVH.read(pathToBVHFile, function(motion) {
-		
 		// basic infomation about motion data
 		motion.frameTime
 		motion.numFrames
