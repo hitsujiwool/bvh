@@ -1,4 +1,4 @@
-# BVH(BioVision Hierarchical data) Parser written in JavaScript
+# BVH Parser written in JavaScript
 
 ## Usage
 
