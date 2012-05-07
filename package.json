@@ -1,0 +1,22 @@
+{
+  "author": "hitsujiwool <utatanenohibi@gmail.com>",
+  "name": "bvh",
+  "description": "BVH Parser written in JavaScript",
+  "version": "0.0.0",
+  "homepage": "https://github.com/hitsujiwool/bvh",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hitsujiwool/bvh.git"
+  },
+  "main": "./lib/index",
+  "dependencies": {
+    "xmlhttprequest": "*"
+  },
+  "devDependencies": {
+    "browserbuild": "*"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
