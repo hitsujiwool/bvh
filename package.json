@@ -9,11 +9,17 @@
     "url": "git://github.com/hitsujiwool/bvh.git"
   },
   "main": "./lib/index",
+  "scripts": {
+    "test": "make test"
+  },
   "dependencies": {
     "xmlhttprequest": "*"
   },
   "devDependencies": {
-    "browserbuild": "*"
+    "browserbuild": "*",
+    "connect": "1.x",
+    "mocha": "*",
+    "should": "*"
   },
   "optionalDependencies": {},
   "engines": {
