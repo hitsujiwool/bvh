@@ -13,7 +13,8 @@
     "xmlhttprequest": "*"
   },
   "devDependencies": {
-    "browserbuild": "*"
+    "browserbuild": "*",
+    "uglify-js": "*"
   },
   "optionalDependencies": {},
   "engines": {
