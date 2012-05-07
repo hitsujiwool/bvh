@@ -2,59 +2,38 @@ var BVH = (function(exports) {
 
   function Parser(lines) {
     this._lines = lines;
-    this._lineNumber = 0;
+    this._lineNumber = -1;
     this.currentNode = null;
+    this.next();
   };
   
-  Parser.prototype.parse = function() {    
-    this
-      .blank()
-      .hierarchy();
-    return this;
-  };
-  
-  Parser.prototype.hierarchy = function() {
+  Parser.prototype.parse = function() {
     this
       .expect('HIERARCHY')
       .root()
       .motion();
+    if (this.get()) throw new Error('Parse error: Invalid token ' + this.get() + '.');
     return this;
   };
-
-  Parser.prototype.blank = function() {
-    while (this.accept('')) {
-      this.next();
-    }
-    return this;
-  };
-
+  
   Parser.prototype.root = function() {
     var that = this,
         node;
     this
-      .blank()
       .expect('ROOT', function(line) {
         var nodeName = line.split(' ')[1];
         node = new BVHNode(nodeName);
         that.currentNode = node;
       })
-      .blank()
       .expect('{')
-      .blank()
       .offset()
-      .blank()
-      .channels()
-      .blank();
+      .channels();
     while (this.accept('JOINT')) {
-      this
-        .joint()
-        .blank();
+      this.joint();
       this.currentNode = node;
     }
     if (this.accept('End')) this.end();
-    this
-      .blank()
-      .expect('}');
+    this.expect('}');
     return this;
   };
 
@@ -62,7 +41,6 @@ var BVH = (function(exports) {
     var that = this,
         node;
     this
-      .blank()
       .expect('JOINT', function(line) {
         var nodeName = line.split(' ')[1];
         node = new BVHNode(nodeName);
@@ -70,47 +48,31 @@ var BVH = (function(exports) {
         that.currentNode.children.push(node);
         that.currentNode = node;
       })
-      .blank()
       .expect('{')
-      .blank()
       .offset()
-      .blank()
-      .channels()
-      .blank();
+      .channels();
     while (this.accept('JOINT')) {
-      this
-        .joint()
-        .blank();
+      this.joint();
       this.currentNode = node;
     }
     if (this.accept('End')) this.end();
-    this
-      .blank()
-      .expect('}');
+    this.expect('}');
     return this;
   };
 
   Parser.prototype.end = function() {
-    this.blank();
-    if (this.get(0) !== 'End Site') {
-      throw new Error('Parse error: End Site expected, but ' + this.get() + '.');
-    }
+    if (this.get(0) !== 'End Site') throw new Error('Parse error: End Site expected, but ' + this.get() + '.');
     this
       .next()
-      .blank()
       .expect('{')
-      .blank()
       .endOffset()
-      .blank()
       .expect('}');
     return this;
   };
 
   Parser.prototype.offset = function() {
     var offsets = this.get().split(' ').slice(1);
-    if (offsets.length !== 3) {
-      throw new Error('Parse error: Invalid offset number.');
-    }
+    if (offsets.length !== 3) throw new Error('Parse error: Invalid offset number.');
     this.currentNode.offsetX = +offsets[0];
     this.currentNode.offsetY = +offsets[1];
     this.currentNode.offsetZ = +offsets[2];
@@ -119,9 +81,7 @@ var BVH = (function(exports) {
 
   Parser.prototype.endOffset = function() {
     var offsets = this.get().split(' ').slice(1);
-    if (offsets.length !== 3) {
-      throw new Error('Parse error: Invalid offset number.');
-    }
+    if (offsets.length !== 3) throw new Error('Parse error: Invalid offset number.');
     this.currentNode.hasEnd = true;
     this.currentNode.endOffsetX = +offsets[0];
     this.currentNode.endOffsetY = +offsets[1];
@@ -132,11 +92,8 @@ var BVH = (function(exports) {
   Parser.prototype.channels = function() {
     var pieces = this.get(0).split(' '),
         n = parseInt(pieces[1], 10),
-        channels = pieces.slice(2),
-        that = this;
-    if (n !== channels.length) {
-      throw new Error('Parse error: ' + n + ' expected for number of channels, but ' + channels.length + '.');
-    }
+        channels = pieces.slice(2);
+    if (n !== channels.length) throw new Error('Parse error: ' + n + ' expected for number of channels, but ' + channels.length + '.');
     this.currentNode.channels = channels;
     return this.next();
   };
@@ -150,7 +107,7 @@ var BVH = (function(exports) {
     for (var i = 0, len = this.numFrames; i < len; i++) {
       this.frameValues();
     }
-    this.next();
+    return this;
   };
   
   Parser.prototype.frames = function() {
@@ -177,9 +134,7 @@ var BVH = (function(exports) {
     var values = this.get().split(' '),
         that = this;
     this._nodeList.forEach(function(node) {
-      if (values.length < node.channels.length) {
-        throw new Error('Parse error: Too short motion values per frame'); 
-      }
+      if (values.length < node.channels.length) throw new Error('Parse error: Too short motion values per frame'); 
       node.frames.push(values.splice(0, node.channels.length).map(function(str) { return +str; }));
     });
     if (values.length > 0) throw new Error('Parse error: Too much motion values per frame');
@@ -202,12 +157,18 @@ var BVH = (function(exports) {
   };
 
   Parser.prototype.next = function() {
-    this._lineNumber++;
+    do {
+      this._lineNumber++;
+    } while (this.get() === '')
     return this;
   };
 
   Parser.prototype.get = function() {
-    return this._lines[this._lineNumber].replace(/(^\s+)|(\s+$)/g, "");
+    if (typeof this._lines[this._lineNumber] === 'undefined') {
+      return undefined;
+    } else {
+      return this._lines[this._lineNumber].replace(/(^\s+)|(\s+$)/g, "");
+    }
   };
 
   function BVHNode(nodeName) {
