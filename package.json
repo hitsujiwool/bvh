@@ -9,13 +9,19 @@
     "url": "git://github.com/hitsujiwool/bvh.git"
   },
   "main": "./lib/index",
+  "scripts": {
+    "test": "make test"
+  },
   "dependencies": {
     "xmlhttprequest": "*"
   },
   "devDependencies": {
     "browserbuild": "*",
     "connect": "1.x",
+<<<<<<< HEAD
     "uglify-js": "*",
+=======
+>>>>>>> master
     "mocha": "*",
     "should": "*"
   },
