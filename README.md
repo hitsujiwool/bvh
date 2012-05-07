@@ -49,7 +49,7 @@ For client-side scripting, we provide `dist/bvh.js`and`dist/bvh.min.js`, both of
 
 (The MIT License)
 
-Copyright (c) 2012 hitsujiwool <utatanenohibi@gmail.com>
+Copyright (c) 2012 hitsujiwool &lt;utatanenohibi@gmail.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
