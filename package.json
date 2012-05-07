@@ -18,10 +18,7 @@
   "devDependencies": {
     "browserbuild": "*",
     "connect": "1.x",
-<<<<<<< HEAD
     "uglify-js": "*",
-=======
->>>>>>> master
     "mocha": "*",
     "should": "*"
   },
