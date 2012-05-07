@@ -14,7 +14,10 @@
   },
   "devDependencies": {
     "browserbuild": "*",
-    "uglify-js": "*"
+    "connect": "1.x",
+    "uglify-js": "*",
+    "mocha": "*",
+    "should": "*"
   },
   "optionalDependencies": {},
   "engines": {
