@@ -18,6 +18,7 @@
   "devDependencies": {
     "browserbuild": "*",
     "connect": "1.x",
+    "uglify-js": "*",
     "mocha": "*",
     "should": "*"
   },
