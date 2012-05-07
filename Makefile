@@ -9,7 +9,7 @@ build:
 		lib > dist/bvh.js
 
 build-min: build
-	@cat dist/bvh.js | uglifyjs > dist/bvh.min.js
+	@cat dist/bvh.js | ./node_modules/.bin/uglifyjs > dist/bvh.min.js
 
 test:
 	@./node_modules/.bin/mocha \
