@@ -3,7 +3,7 @@
 ## Usage
 
 ```javascript
-BVH.read(<url-for-bvh-file>, function(motion) {
+BVH.read(urlForBVHFile, function(motion) {
   // basic infomation about motion data
   motion.frameTime
   motion.numFrames
